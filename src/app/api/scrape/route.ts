@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { scrapeF1News } from "../../../lib/scrapper";
+import { scrapeF1News } from "../../../lib/scraper";
 
 export async function GET() {
     const news = await scrapeF1News();
