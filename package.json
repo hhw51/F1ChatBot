@@ -15,6 +15,7 @@
     "cheerio": "^1.0.0",
     "dotenv": "^16.4.7",
     "langchain": "^0.1.36",
+    "lucide-react": "^0.475.0",
     "next": "15.1.7",
     "openai": "^4.85.1",
     "puppeteer": "^19.11.1",
