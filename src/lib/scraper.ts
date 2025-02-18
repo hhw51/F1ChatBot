@@ -1,54 +1,45 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 
-/**
- * Scrape F1 data based on the user's query.
- * @param {string} query - The question asked by the user.
- * @returns {Promise<string>} - A scraped answer or null if not found.
- */
-export const scrapeF1Data = async (query: string): Promise<string | null> => {
-    try {
-        console.log("🔍 Scraping live data for:", query);
+const WIKI_URL = "https://en.wikipedia.org/wiki/List_of_Formula_One_World_Drivers%27_Champions";
 
-        // ✅ Force scraping for "Who is the current world champion?"
-        if (query.toLowerCase().includes("current world champion") || query.toLowerCase().includes("2024 champion")) {
-            return await scrapeWorldChampion();
-        }
-
-        console.log("❌ No relevant scraping logic for:", query);
-        return null;
-    } catch (error) {
-        console.error("❌ Scraper Error:", error);
-        return null;
-    }
-};
-
-/**
- * Scrapes the **current** F1 World Champion from official sources.
- */
-export const scrapeWorldChampion = async (): Promise<string | null> => {
+export const getLatestF1Champion = async (): Promise<string | null> => {
     try {
         console.log("🌍 Scraping Wikipedia for the latest F1 World Champion...");
-
-        // ✅ Wikipedia page for past champions
-        const { data } = await axios.get("https://en.wikipedia.org/wiki/List_of_Formula_One_World_Champions");
+        
+        const { data } = await axios.get(WIKI_URL);
         const $ = cheerio.load(data);
-
-        // ✅ Find the last completed championship row (2024)
-        const latestRow = $("table.wikitable tbody tr").last();
-        const year = latestRow.find("td").first().text().trim();
-        const champion = latestRow.find("td").eq(2).text().trim();
-
-        if (!champion || !year) {
-            console.log("❌ Could not fetch world champion.");
+        
+        let latestChampion = null;
+        
+        $("table.wikitable tbody tr").each((_, row) => {
+            const columns = $(row).find("td");
+            if (columns.length > 0) {
+                const year = $(columns[0]).text().trim();
+                const driver = $(columns[1]).text().trim();
+                
+                if (year === "2024") {
+                    latestChampion = driver;
+                    return false; // Stop loop once 2024 is found
+                }
+            }
+        });
+        
+        if (!latestChampion) {
+            console.error("❌ Could not fetch world champion.");
             return null;
         }
 
-        console.log(`🏆 Found: ${champion} (${year})`);
-
-        return `🏆 The **Formula 1 World Champion of ${year}** is **${champion}**.`;
+        console.log("✅ Scraped Champion:", latestChampion);
+        return latestChampion;
     } catch (error) {
-        console.error("❌ Failed to scrape world champion:", error);
+        console.error("❌ Error scraping Wikipedia:", error);
         return null;
     }
 };
+
+
+(async () => {
+    const result = await getLatestF1Champion();
+    console.log("✅ Scraped Champion:", result);
+})();
