@@ -40,7 +40,7 @@ export const getClaudeResponse = async (
 
         return response.data.content[0].text.trim();
     } catch (error) {
-        console.error("Claude API Error:", error.response?.data || error.message);
+        console.error("Claude API Error:", error);
         return "Sorry, I couldn't fetch F1 data at the moment.";
     }
 };
