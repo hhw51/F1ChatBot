@@ -41,6 +41,7 @@ Create a .env.local file in the root directory and add the required keys:
 env
 Copy
 Edit
+
 # 🔹 AstraDB Configuration
 ASTRA_DB_NAMESPACE=your_db_namespace
 ASTRA_DB_COLLECTION=f1chat_history
@@ -49,6 +50,7 @@ ASTRA_DB_APPLICATION_TOKEN=your_astra_application_token
 
 # 🔹 Claude AI API Key
 CLAUDE_API_KEY=your_claude_api_key
+
 4️⃣ Start the Development Server
 sh
 Copy
